@@ -71,33 +71,32 @@ http://127.0.0.1:8000/api/v1/groups/
 _Ответ_
 
 ```
-[
 {
-"id": 0,
-"title": "string",
-"slug": "string",
-"description": "string"
+    "id": 0,
+    "title": "string",
+    "slug": "string",
+    "description": "string"
 }
-]
 ```
 
 Получение списка постов (GET запрос):
 
+_Запрос_
+
 ```
 http://127.0.0.1:8000/api/v1/posts/
-
 ```
 
 _Ответ_
 
 ```
 {
-"count": 123,
-"next": "http://api.example.org/accounts/?offset=400&limit=100",
-"previous": "http://api.example.org/accounts/?offset=200&limit=100",
-"results": [
-{}
-]
+    "count": 123,
+    "next": "http://api.example.org/accounts/?offset=400&limit=100",
+    "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+    "results": [
+    {}
+    ]
 }
 ```
 
@@ -121,12 +120,12 @@ _Ответ_
 
 ```
 {
-"id": 0,
-"author": "string",
-"text": "string",
-"pub_date": "2019-08-24T14:15:22Z",
-"image": "string",
-"group": 0
+    "id": 0,
+    "author": "string",
+    "text": "string",
+    "pub_date": "2019-08-24T14:15:22Z",
+    "image": "string",
+    "group": 0
 }
 ```
 
