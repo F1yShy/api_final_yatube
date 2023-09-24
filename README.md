@@ -62,17 +62,48 @@ _Для небезопасных методов в API требуется авт
 
 Получение списка групп (GET запрос):
 
+_Запрос_
+
 ```
 http://127.0.0.1:8000/api/v1/groups/
+```
+
+_Ответ_
+
+```
+[
+{
+"id": 0,
+"title": "string",
+"slug": "string",
+"description": "string"
+}
+]
 ```
 
 Получение списка постов (GET запрос):
 
 ```
 http://127.0.0.1:8000/api/v1/posts/
+
+```
+
+_Ответ_
+
+```
+{
+"count": 123,
+"next": "http://api.example.org/accounts/?offset=400&limit=100",
+"previous": "http://api.example.org/accounts/?offset=200&limit=100",
+"results": [
+{}
+]
+}
 ```
 
 Создание поста (POST запрос):
+
+_Запрос_
 
 ```
 http://127.0.0.1:8000/api/v1/posts/
@@ -83,6 +114,19 @@ http://127.0.0.1:8000/api/v1/posts/
 {
     "text": "123123",
     "group": {{group_id}}
+}
+```
+
+_Ответ_
+
+```
+{
+"id": 0,
+"author": "string",
+"text": "string",
+"pub_date": "2019-08-24T14:15:22Z",
+"image": "string",
+"group": 0
 }
 ```
 

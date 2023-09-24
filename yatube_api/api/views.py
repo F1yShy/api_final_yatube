@@ -1,8 +1,9 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, mixins, viewsets
+from rest_framework import filters, viewsets
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
+from api.mixins import GetPostViewSet
 from api.permissions import IsAuthAndSafeOrIsAuthorOfObjectPermission
 from api.serializers import (
     PostSerializer,
@@ -11,17 +12,6 @@ from api.serializers import (
     FollowSerializer,
 )
 from posts.models import Comment, Group, Follow, Post
-
-
-class GetPostViewSet(
-    mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
-):
-    """
-    Кастомный базовый класс для вьюсета, возвращающий список объектов
-    для метода GET и создающий объект методом POST
-    """
-
-    pass
 
 
 class PostViewSet(viewsets.ModelViewSet):
