@@ -1,8 +1,7 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, viewsets
-from rest_framework.exceptions import ValidationError
+from rest_framework import filters, mixins, viewsets
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from api.permissions import IsAuthAndSafeOrIsAuthorOfObjectPermission
 from api.serializers import (
@@ -12,6 +11,17 @@ from api.serializers import (
     FollowSerializer,
 )
 from posts.models import Comment, Group, Follow, Post
+
+
+class GetPostViewSet(
+    mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
+):
+    """
+    Кастомный базовый класс для вьюсета, возвращающий список объектов
+    для метода GET и создающий объект методом POST
+    """
+
+    pass
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -38,6 +48,7 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+    permission_classes = [AllowAny]
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -52,18 +63,18 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = [IsAuthAndSafeOrIsAuthorOfObjectPermission]
 
-    def create_post(self):
+    def get_post(self):
         return get_object_or_404(Post, pk=self.kwargs.get("post_id"))
 
     def get_queryset(self):
-        return self.create_post().comments
+        return self.get_post().comments
 
     def perform_create(self, serializer):
-        post = self.create_post()
+        post = self.get_post()
         serializer.save(author=self.request.user, post=post)
 
 
-class FollowViewSet(viewsets.ModelViewSet):
+class FollowViewSet(GetPostViewSet):
     """
     Вьюсет с операциями GET и POST, реализующий получение списка подпищиков и
     добавляющий другого пользователя, которого нет в подписках, в список
@@ -77,18 +88,7 @@ class FollowViewSet(viewsets.ModelViewSet):
     search_fields = ("following__username",)
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
+        return self.request.user.following
 
     def perform_create(self, serializer):
-        follower = serializer.validated_data["following"]
-        followers_in_list = self.queryset.filter(
-            user=self.request.user, following=follower
-        )
-        if followers_in_list.exists():
-            raise ValidationError(
-                "Ошибка! Вы уже подписаны на данного пользователя!"
-            )
-        if follower == self.request.user:
-            raise ValidationError("Ошибка! Вы не можете подписаться на себя!")
-
         serializer.save(user=self.request.user)
